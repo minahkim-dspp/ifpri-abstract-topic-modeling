@@ -1,6 +1,10 @@
 import pandas as pd
 import re
+
+import nltk
+nltk.download('wordnet')
 from nltk.stem.wordnet import WordNetLemmatizer
+
 from sklearn.feature_extraction import text 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
