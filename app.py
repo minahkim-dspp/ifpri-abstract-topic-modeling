@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-from preprocessing import lda_process, Lemmatization_Tokenizer
+from preprocessing.preprocessing import lda_process, Lemmatization_Tokenizer
 
 import random
 
