@@ -56,7 +56,7 @@ def display_topics(model, feature_names, no_top_words):
 def lda_process(number_topic = 6):
 
     ## 1. Read in the dataset & subset it
-    df_base = DataProcessing("preprocessing/ifpri_brief_df.csv")
+    df_base = DataProcessing("ifpri_brief_df.csv")
 
     ## 2. Lemmitization & Vectorization
     # Initiate the TF-IDF with lemmitization
