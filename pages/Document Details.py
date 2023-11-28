@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import math
 
-from pages.preprocessing import lda_process, Lemmatization_Tokenizer
+from preprocessing import lda_process, Lemmatization_Tokenizer
 
 import random
 
@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 # Data, LDA object and the original Document Term Matrix
 # Topics and their words 
 # Documents and their topics
-lda_result = lda_process(number_topic = 7, csv_address= "ifpri_brief_df.csv")
+lda_result = lda_process(number_topic = 7, csv_address= "data/ifpri_brief_df.csv")
 
 df = lda_result.base_data
 lda = lda_result.lda
