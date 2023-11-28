@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import math
 
-from preprocessing import lda_process, Lemmatization_Tokenizer
+from pages.preprocessing import lda_process, Lemmatization_Tokenizer
 
 import random
 
@@ -14,14 +15,14 @@ from matplotlib import pyplot as plt
 ### 1. Data to Visualize 
 
 # Data, LDA object and the original Document Term Matrix
-df, lda, dtm = lda_process(number_topic = 6)
-
 # Topics and their words 
-component_array = lda.components_/lda.components_.sum(axis =1)[:, np.newaxis]
-component_df = pd.DataFrame(component_array, columns = lda.feature_names_in_)
-
 # Documents and their topics
-document_topic_df = pd.DataFrame(lda.transform(dtm))
+lda_result = lda_process(number_topic = 7, csv_address= "ifpri_brief_df.csv")
+
+df = lda_result.base_data
+lda = lda_result.lda
+component_df = lda_result.component_df
+document_topic_df = lda_result.document_topic_df
 
 # Randomly choose the text that we will analyze
 document_num = random.choice(range(0, df.shape[0]))
@@ -85,8 +86,11 @@ st.header("What are the topics that we identified?")
 fig = plt.figure()
 
 for i in range(0, lda.n_components):
+    # Calculate the number of row necessary
+    row_n = math.ceil(lda.n_components/2)
+
     # Add a subplot
-    ax = fig.add_subplot(3, 2, i+1)
+    ax = fig.add_subplot(row_n, 2, i+1)
     
     # The first 10 words that represent the data
     representation = component_df.iloc[i].sort_values(ascending= False).head(20)
