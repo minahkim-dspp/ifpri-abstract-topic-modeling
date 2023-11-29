@@ -27,7 +27,7 @@ with st.sidebar:
 # Data, LDA object and the original Document Term Matrix
 # Topics and their words 
 # Documents and their topics
-lda_result = lda_process(number_topic = st.session_state.number_of_topic, csv_address= "data/ifpri_brief_df.csv")
+lda_result = lda_process(number_topic = st.session_state.number_of_topic, csv_address= ".../data/ifpri_brief_df.csv")
 
 df = lda_result.base_data
 lda = lda_result.lda
