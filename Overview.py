@@ -33,7 +33,7 @@ if "abstract_num" not in st.session_state:
     st.session_state.abstract_num = 0
 
 # Import from the previous process
-lda_result = lda_process(number_topic = st.session_state.number_of_topic, csv_address="ifpri-abstract-topic-modeling/data/ifpri_brief_df.csv")
+lda_result = lda_process(number_topic = st.session_state.number_of_topic, csv_address="/data/ifpri_brief_df.csv")
 document_topic_df = lda_result.document_topic_df
 
 ############# PCA(Principal Component Analysis) ###############
