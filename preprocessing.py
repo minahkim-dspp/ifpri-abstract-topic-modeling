@@ -22,8 +22,21 @@ class DataProcessing:
         self.raw_df = pd.read_csv(csv)
         self.df_of_interest = self.raw_df[['Title', 'Year', 'Author', 'Abstract', 'IFPRI Descriptors', 'Subject - author supplied keywords',
        'Subject - country location', 'Subject - keywords']]
+
         self.with_abstract = self.df_of_interest[self.df_of_interest.Abstract.isnull() == False]
         self.no_abstract = self.df_of_interest[self.df_of_interest.Abstract.isnull()]
+
+        self.with_abstract = self.converting_category(self.with_abstract)
+
+    def converting_category(self, data):
+        # Organize the keywords section
+        
+        data["Subject - keywords"] = data["Subject - keywords"].str.lower()
+        data["Subject - keywords"] = [re.sub(r"\(|\)", "", text) if type(text) == str else "" for text in data["Subject - keywords"]]
+        data["Subject - keywords"] = [re.split(r"\n", text) for text in data["Subject - keywords"]]
+
+        return data
+        
     
 class Lemmatization_Tokenizer(object):
     '''
@@ -83,7 +96,7 @@ class LDAResults:
 
 
 
-def lda_process(number_topic = 6, csv_address = "final_project/ifpri-abstract-topic-modeling/pages/ifpri_brief_df.csv"):
+def lda_process(number_topic = 6, csv_address = "ifpri-abstract-topic-modeling/data/ifpri_brief_df.csv"):
 
     ## 1. Read in the dataset & subset it
     df_base = DataProcessing(csv_address)

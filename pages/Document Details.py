@@ -5,39 +5,64 @@ import math
 
 from preprocessing import lda_process, Lemmatization_Tokenizer
 
-import random
-
 from annotated_text import annotated_text, parameters
 
-import wordcloud
 from matplotlib import pyplot as plt
+
+############# UI ###############
+with st.sidebar:
+
+    if "number_of_topic" not in st.session_state:
+        st.session_state["number_of_topic"] = 7
+
+    st.session_state["number_of_topic"] = st.select_slider(
+                                            "Select the Number of Topic to Identify",
+                                            options = range(1, 10),
+                                            value = st.session_state["number_of_topic"])
+
+
 
 ### 1. Data to Visualize 
 
 # Data, LDA object and the original Document Term Matrix
 # Topics and their words 
 # Documents and their topics
-lda_result = lda_process(number_topic = 7, csv_address= "data/ifpri_brief_df.csv")
+lda_result = lda_process(number_topic = st.session_state.number_of_topic, csv_address= "data/ifpri_brief_df.csv")
 
 df = lda_result.base_data
 lda = lda_result.lda
 component_df = lda_result.component_df
 document_topic_df = lda_result.document_topic_df
 
-# Randomly choose the text that we will analyze
-document_num = random.choice(range(0, df.shape[0]))
-abstract = df.Abstract.iloc[document_num]
 
 ### 2. Building the backbone of the website
 
 # Title
-st.title("Topic Modeling with the Abstract of the IFPRI Policy Brief")
+#st.title("Topic Modeling with the Abstract of the IFPRI Policy Brief")
 
 # Color Scheme
 tol_light_color =["#77AADD", "#EE8866", "#EEDD88", "#FFAABB", "#99DDFF", "#44BB99", "#BBCC33", "#AAAA00", "#DDDDDD"]
 
 # First Header
 st.header("Abstract")
+
+# Abstract Title
+
+# Set the abstract number at 0 when not initialized
+if "abstract_num" not in st.session_state:
+    st.session_state.abstract_num = 0
+
+#Choose an Abstract using title
+title_abstract= st.selectbox(
+                    label = "Choose the Title of the Abstract",
+                    options = lda_result.base_data["Title"],
+                    index = int(st.session_state.abstract_num))
+
+st.session_state["abstract_num"] = lda_result.base_data[lda_result.base_data.Title == title_abstract].index.values[0]
+
+
+document_num = st.session_state["abstract_num"]
+abstract = df.Abstract.iloc[document_num]
 
 ## Abstract
 # Importing the lemmatization and tokenization process that the text went through
@@ -78,33 +103,32 @@ for i in range(0, len(topic_by_order_of_word)):
 
 annotated_text(abstract_text_with_annotation)
 
-
 # Second Header
-st.header("What are the topics that we identified?")
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Subject - author supplied keywords", "Subject - country location", "Subject - keywords", "IFPRI Descriptors", "Basic Information"])
 
-## Word Cloud
-fig = plt.figure()
 
-for i in range(0, lda.n_components):
-    # Calculate the number of row necessary
-    row_n = math.ceil(lda.n_components/2)
+if type(df["Subject - author supplied keywords"].iloc[document_num]) == str:
+    with tab1:
+        st.write(df["Subject - author supplied keywords"].iloc[document_num])
 
-    # Add a subplot
-    ax = fig.add_subplot(row_n, 2, i+1)
-    
-    # The first 10 words that represent the data
-    representation = component_df.iloc[i].sort_values(ascending= False).head(20)
+if type(df["Subject - country location"].iloc[document_num]) == str:
+    with tab2:
+        st.write(df["Subject - country location"].iloc[document_num])
 
-    # Create a wordcloud
-    wc = wordcloud.WordCloud(background_color = "white", 
-                                color_func = lambda *args, **kwargs: tol_light_color[i]).generate_from_frequencies(representation)
+if type(df["Subject - keywords"].iloc[document_num]) == list:
+    with tab3:
+         st.write("; ".join(df["Subject - keywords"].iloc[document_num]))
 
-    ax.imshow(wc)
-    ax.axis('off')
+if type(df["IFPRI Descriptors"].iloc[document_num]) == str:
+    with tab4:
+         st.write(df["IFPRI Descriptors"].iloc[document_num])
 
-st.pyplot(fig)
+with tab5:
+    st.write("Author : " + df["Author"].iloc[document_num])
+    st.write("Year : " + str(df["Year"].iloc[document_num]))
 
-# Third Header
+
+# Forth Header
 st.header("The Distribution of Topics of this Abstract")
 
 # Start a plot
@@ -127,7 +151,5 @@ ax_1.set_xlabel("Topic")
 
 # Show the plot
 st.pyplot(fig_1)   
-
-
 
 
