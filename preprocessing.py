@@ -31,14 +31,11 @@ class DataProcessing:
     def converting_category(self, data):
         # Data processing to convert string list into list with individual items
 
-        def str_to_list(subject:str, cap = False) -> list:
+        def str_to_list(subject:str) -> list:
             # Function that includes all the changes that is needed for the conversion
 
             subject = str(subject)
-            if cap:
-                subject = subject.upper()
-            else: 
-                subject = subject.lower()
+            subject = subject.upper()
             
             subject = re.sub(r"\(|\)", "", subject)
             subject = re.split(r"\n", subject)
@@ -49,7 +46,7 @@ class DataProcessing:
 
 
         # Organize the Country Location Section
-        data["Subject - country location"] = data["Subject - country location"].apply(str_to_list(cap = True))
+        data["Subject - country location"] = data["Subject - country location"].apply(str_to_list)
 
         return data
         
