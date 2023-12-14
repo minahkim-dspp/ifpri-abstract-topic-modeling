@@ -29,13 +29,27 @@ class DataProcessing:
         self.with_abstract = self.converting_category(self.with_abstract)
 
     def converting_category(self, data):
+        # Data processing to convert string list into list with individual items
+
+        def str_to_list(subject:str, cap = False) -> list:
+            # Function that includes all the changes that is needed for the conversion
+
+            subject = str(subject)
+            if cap:
+                subject = subject.upper()
+            else: 
+                subject = subject.lower()
+            
+            subject = re.sub(r"\(|\)", "", subject)
+            subject = re.split(r"\n", subject)
+
+            return subject
         # Organize the keywords section
-        data.loc["Subject - keywords"] = data["Subject - keywords"].str.lower()
-        data.loc["Subject - keywords"] = [re.sub(r"\(|\)", "", text) if type(text) == str else "" for text in data["Subject - keywords"]]
-        data.loc["Subject - keywords"] = [re.split(r"\n", text) for text in data["Subject - keywords"]]
+        data["Subject - keywords"] = data["Subject - keywords"].apply(str_to_list)
+
 
         # Organize the Country Location Section
-        data.loc["Subject - country location"] = [re.split(r"\n", text) if type(text) == str else [] for text in data["Subject - country location"]]
+        data["Subject - country location"] = data["Subject - country location"].apply(str_to_list(cap = True))
 
         return data
         
