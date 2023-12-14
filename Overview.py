@@ -139,10 +139,9 @@ with col1:
         if checkbox[i]:
             ax.scatter(x= dimension_reduced_topics.x, y= dimension_reduced_topics.y, c = tol_light_color[i], alpha = dimension_reduced_topics[i], label = i)
 
-    if "abstract_num" in globals():
-        ax.scatter(x= dimension_reduced_topics.iloc[st.session_state.abstract_num].x, 
-                    y= dimension_reduced_topics.iloc[st.session_state.abstract_num].y, 
-                    facecolors = "none", edgecolors='red', label = "Abstract-Selected")
+    ax.scatter(x= dimension_reduced_topics.iloc[st.session_state.abstract_num].x, 
+                y= dimension_reduced_topics.iloc[st.session_state.abstract_num].y, 
+                facecolors = "none", edgecolors='red', label = "Abstract-Selected")
     
     if "boolean_for_subsetting" in globals():
         subset_by_keyword= dimension_reduced_topics[boolean_for_subsetting]
