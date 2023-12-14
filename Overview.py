@@ -23,7 +23,7 @@ if "number_of_topic" not in st.session_state:
     st.session_state["number_of_topic"] = 7
 
 # Default Abstract Number
-if "abstract_num" not in st.session_states:
+if "abstract_num" not in st.session_state:
     st.session_state["abstract_num"] = 0
 
 # Import from the previous process
