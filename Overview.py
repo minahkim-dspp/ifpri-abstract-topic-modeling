@@ -187,8 +187,8 @@ title_abstract= st.selectbox(
                     label = "Choose the Title of the Abstract",
                     options = lda_result.base_data["Title"])
 
-abstract_num = lda_result.base_data[lda_result.base_data.Title == title_abstract].index.values[0]
-abstract = df.Abstract.iloc[abstract_num]
+st.session_state.abstract_num = lda_result.base_data[lda_result.base_data.Title == title_abstract].index.values[0]
+abstract = df.Abstract.iloc[st.session_state.abstract_num]
 
 # Importing the lemmatization and tokenization process that the text went through
 lemmatization_and_tokenizing = Lemmatization_Tokenizer()
@@ -232,26 +232,26 @@ annotated_text(abstract_text_with_annotation)
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Subject - author supplied keywords", "Subject - country location", "Subject - keywords", "IFPRI Descriptors", "Basic Information"])
 
 
-if type(df["Subject - author supplied keywords"].iloc[abstract_num]) == str:
+if type(df["Subject - author supplied keywords"].iloc[st.session_state.abstract_num]) == str:
     with tab1:
-        st.write(df["Subject - author supplied keywords"].iloc[abstract_num])
+        st.write(df["Subject - author supplied keywords"].iloc[st.session_state.abstract_num])
 
-if type(df["Subject - country location"].iloc[abstract_num]) == list:
+if type(df["Subject - country location"].iloc[st.session_state.abstract_num]) == list:
     with tab2:
-        st.write("; ".join(df["Subject - country location"].iloc[abstract_num]))
+        st.write("; ".join(df["Subject - country location"].iloc[st.session_state.abstract_num]))
 
-if type(df["Subject - keywords"].iloc[abstract_num]) == list:
+if type(df["Subject - keywords"].iloc[st.session_state.abstract_num]) == list:
     with tab3:
-         st.write("; ".join(df["Subject - keywords"].iloc[abstract_num]))
+         st.write("; ".join(df["Subject - keywords"].iloc[st.session_state.abstract_num]))
 
-if type(df["IFPRI Descriptors"].iloc[abstract_num]) == str:
+if type(df["IFPRI Descriptors"].iloc[st.session_state.abstract_num]) == str:
     with tab4:
-         st.write(df["IFPRI Descriptors"].iloc[abstract_num])
+         st.write(df["IFPRI Descriptors"].iloc[st.session_state.abstract_num])
 
 with tab5:
-    st.write("Title: "+ df["Title"].iloc[abstract_num])
-    st.write("Author : " + df["Author"].iloc[abstract_num])
-    st.write("Year : " + str(df["Year"].iloc[abstract_num]))
+    st.write("Title: "+ df["Title"].iloc[st.session_state.abstract_num])
+    st.write("Author : " + df["Author"].iloc[st.session_state.abstract_num])
+    st.write("Year : " + str(df["Year"].iloc[st.session_state.abstract_num]))
 
 
 ############# Distribution Bar Chart ###############
@@ -261,7 +261,7 @@ st.header("The Distribution of Topics of this Abstract")
 fig_1, ax_1 = plt.subplots()
 
 # Extract the information about the document from document_topic_df
-this_document_topic_df = document_topic_df[document_topic_df.index == abstract_num]
+this_document_topic_df = document_topic_df[document_topic_df.index == st.session_state.abstract_num]
 
 # Create a bar graph
 tol_light_color_list =["#77AADD", "#EE8866", "#EEDD88", "#FFAABB", "#99DDFF", "#44BB99", "#BBCC33", "#AAAA00", "#DDDDDD"]
