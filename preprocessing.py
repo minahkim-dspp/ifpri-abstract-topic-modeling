@@ -63,18 +63,6 @@ class Lemmatization_Tokenizer(object):
 
         return [self.wnl.lemmatize(token) for token in abstract_no_number]
 
-def display_topics(model, feature_names, no_top_words):
-    for topic_index, topic in enumerate(model.components_):
-        feature_topic = []
-
-        # sort it, and jump it every -1?
-        topic_word_indexes = topic.argsort()[::-1]
-        top_indexes = topic_word_indexes[:no_top_words]
-
-        feature_topic.append([feature_names[i] for i in top_indexes])
-        
-        return feature_topic
-
 class LDAResults:
     def __init__(self, base_data, lda, dtm) -> None:
         self.base_data = base_data
@@ -121,7 +109,6 @@ def lda_process(number_topic = 6, csv_address = "ifpri-abstract-topic-modeling/d
     ## 4. Latent Dirichlet Allocation (LDA)
     lda = LatentDirichletAllocation(n_components = number_topic, random_state = 0)
     lda.fit(text_vector_result) 
-    #display_topics(lda, feature_names, 15)
 
     # 5. Derive the Implication through the results
     lda_result = LDAResults(df_base.with_abstract, lda, text_vector_result)

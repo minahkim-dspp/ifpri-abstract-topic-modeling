@@ -22,6 +22,10 @@ from annotated_text import annotated_text, parameters
 if "number_of_topic" not in st.session_state:
     st.session_state["number_of_topic"] = 7
 
+# Default Abstract Number
+if "abstract_num" not in st.session_states:
+    st.session_state["abstract_num"] = 0
+
 # Import from the previous process
 lda_result = lda_process(number_topic = st.session_state.number_of_topic, csv_address= "data/ifpri_brief_df.csv")
 
@@ -110,10 +114,6 @@ standardized_document_topic_distribution = pd.DataFrame.from_records(standardize
 pca = PCA(n_components = 2)
 dimension_reduced_topics = pd.DataFrame.from_records(pca.fit_transform(standardized_document_topic_distribution), columns=["x", "y"])
 
-# Include the column for the most apparent topic
-#dimension_reduced_topics["topic"] = document_topic_df.apply(lambda row: row[row == row.max()].index.tolist(), axis = 1)
-#dimension_reduced_topics["topic"] = [element[0] for element in dimension_reduced_topics.topic]
-
 # Append with the original dataset
 dimension_reduced_topics = pd.concat([dimension_reduced_topics, document_topic_df], axis=1)
 
@@ -123,8 +123,13 @@ col1, col2 = st.columns([0.7, 0.3])
 with col2:
     checkbox = np.empty(st.session_state["number_of_topic"], dtype = object)
 
-    for i in np.arange(0, st.session_state["number_of_topic"]):
-        checkbox[i] = st.checkbox("Topic "+str(i), value = False)
+    with st.form("checkbox_group"):
+
+        for i in np.arange(0, st.session_state["number_of_topic"]):
+            checkbox[i] = st.checkbox("Topic "+str(i), value = False)
+        
+        submitted = st.form_submit_button("Submit")
+
 
 with col1:
     fig, ax = plt.subplots()
@@ -135,8 +140,8 @@ with col1:
             ax.scatter(x= dimension_reduced_topics.x, y= dimension_reduced_topics.y, c = tol_light_color[i], alpha = dimension_reduced_topics[i], label = i)
 
     if "abstract_num" in globals():
-        ax.scatter(x= dimension_reduced_topics.iloc[abstract_num].x, 
-                    y= dimension_reduced_topics.iloc[abstract_num].y, 
+        ax.scatter(x= dimension_reduced_topics.iloc[st.session_state.abstract_num].x, 
+                    y= dimension_reduced_topics.iloc[st.session_state.abstract_num].y, 
                     facecolors = "none", edgecolors='red', label = "Abstract-Selected")
     
     if "boolean_for_subsetting" in globals():
@@ -234,7 +239,7 @@ if type(df["Subject - author supplied keywords"].iloc[abstract_num]) == str:
 
 if type(df["Subject - country location"].iloc[abstract_num]) == list:
     with tab2:
-        st.write(df["Subject - country location"].iloc[abstract_num])
+        st.write("; ".join(df["Subject - country location"].iloc[abstract_num]))
 
 if type(df["Subject - keywords"].iloc[abstract_num]) == list:
     with tab3:
