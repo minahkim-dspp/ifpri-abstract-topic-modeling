@@ -30,12 +30,12 @@ class DataProcessing:
 
     def converting_category(self, data):
         # Organize the keywords section
-        data["Subject - keywords"] = data["Subject - keywords"].str.lower()
-        data["Subject - keywords"] = [re.sub(r"\(|\)", "", text) if type(text) == str else "" for text in data["Subject - keywords"]]
-        data["Subject - keywords"] = [re.split(r"\n", text) for text in data["Subject - keywords"]]
+        data.loc["Subject - keywords"] = data["Subject - keywords"].str.lower()
+        data.loc["Subject - keywords"] = [re.sub(r"\(|\)", "", text) if type(text) == str else "" for text in data["Subject - keywords"]]
+        data.loc["Subject - keywords"] = [re.split(r"\n", text) for text in data["Subject - keywords"]]
 
         # Organize the Country Location Section
-        data["Subject - country location"] = [re.split(r"\n", text) if type(text) == str else [] for text in data["Subject - country location"]]
+        data.loc["Subject - country location"] = [re.split(r"\n", text) if type(text) == str else [] for text in data["Subject - country location"]]
 
         return data
         
