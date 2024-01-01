@@ -126,7 +126,7 @@ with col2:
     with st.form("checkbox_group"):
 
         for i in np.arange(0, st.session_state["number_of_topic"]):
-            checkbox[i] = st.checkbox("Topic "+str(i), value = False)
+            checkbox[i] = st.checkbox("Topic "+str(i), value = True)
         
         submitted = st.form_submit_button("Submit")
 
